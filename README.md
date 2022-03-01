@@ -1,22 +1,37 @@
 #  Weekly Article Scheduler Tool
 
-To keep the frontpage alive the client wants a a fresh list of articles on a weekly basis, he will schedule them on their own, by choosing articles and selecting the week of the year he wants them to appear.
+Create an Article Scheduler.
+`as = ArticleScheduler`
 
-- Feel free to use this as a reference, or create your own example blog, with the model Article, consisting only of names, no one reads descriptions anyway. 
+Create a few Articles.
+`a = Article.create(name: "First")`
+`b = Article.create(name: "Second")`
+`c = Article.create(name: "Third")`.
 
-- Create an Article Scheduler model with week_number and the reference to the post
+Shedule a few Articles.
+`as.call a`
+`as.call b`
+`as.call c`
 
-- Create an api to retrieve current weeks list of 4 articles, for example GET /current_issue, if that's taking too much time, to serialize , a ruby method such as PostScheduler.current_issue is fine as well.
+Get the Articles for the current week.
+`ArticleSchedule.current`
 
-- In case there are less than 4, try to figure the best way to populate it with previous weeks articles.
+Notes.
+
+In case there are less than 4, try to figure the best way to populate it with previous weeks articles.  
+
+- I would use a class to handle fetching of articles and backfilling when less than four articles for the current week.  
+- I would backfill using the required amount from the previous week.
 
 Other caveats:
 
-- Ideally we don't want to request a random order every visit to the API, what would be the best way to keep the query 'cached'
- 
-- What happens when we switch the year?
+Ideally we don't want to request a random order every visit to the API, what would be the best way to keep the query 'cached'.
+- It depends how and where we fetch the additional Articles required when backfilling.
+- It also depends if the Article name will chnage at all.
+- I would cache the week number against its Articles using a key-value store like redis.
+- I would also use a low level SQL cache on the query using Rails.
+- I would also cache the API response per week requested.
 
-
---- 
-
-Thank you!
+What happens when we switch the year?
+- I would ideally store a year along with the week an Artile goes live, maybe even a data instead of week number.
+- Doing so will prevent issues that arise when we switch the year. 
